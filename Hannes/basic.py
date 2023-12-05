@@ -1,17 +1,17 @@
 import cv2 as cv
 
-img =cv.imread('photos/Zwiebel/Zwiebel_1.jpg')
+img =cv.imread('photos/Zwiebel/Zwiebel (2).jpg')
 resized_img = cv.resize(img, (800, 600))
 
-# cv.imshow('Zwiebel_1', resized_img)
+cv.imshow('Zwiebel (2)', resized_img)
 
 # Convertig to grayscale
 gray = cv.cvtColor(resized_img, cv.COLOR_BGR2GRAY)
-# cv.imshow('Zwiebel_gray', gray)
+cv.imshow('Zwiebel_gray', gray)
 
 # Blur
 blur = cv.GaussianBlur(resized_img, (9,9), cv.BORDER_DEFAULT)
-# cv.imshow('Zwiebel_blur', blur)
+cv.imshow('Zwiebel_blur', blur)
 
 # Edge Cascade
 canny = cv.Canny(resized_img, 125, 175)         # Kanten extrahieren
