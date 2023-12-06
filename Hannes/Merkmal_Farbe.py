@@ -1,28 +1,20 @@
 import cv2 as cv
 import numpy as np
 
-
 img = cv.imread('photos/Zwiebel/Zwiebel (2).jpg')
 img = cv.resize(img, (800, 600))
 
-#cv.imshow('Zwiebel (2)', img)
+# Konvertiere das Bild in den Graustufenmodus
+gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
-blank= np.zeros(img.shape, dtype='uint8')
-cv.imshow('blank', blank)
+cv.imshow('gray_img', gray_img)
 
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#cv.imshow('gray', gray)
-#
-blur = cv.GaussianBlur(gray, (5,5), cv.BORDER_DEFAULT)
-cv.imshow('Blur', blur)
+# Wende Canny-Kanten-Erkennung an
+edges = cv.Canny(gray_img, 60, 120)
 
-canny = cv.Canny(img, 125, 175)
-cv.imshow('canny', canny)
+cv.imshow('edges', edges)
 
-# ret, thresh = cv.threshold(gray, 125, 255, cv.THRESH_BINARY) # Macht Bild binär, d.h. wenn Wert über threshold 125 (Grenzwert), dann wird Pixel weiß (1) sonst zu schwarz (0)
-# cv.imshow('thresh', thresh)
-
-contourslist, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)    
+contourslist, hierarchies = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)    
 
                                                                                     # Gibt "contours" als list zurück, welche alle Koordinaten der Konturpunkte enthält
                                                                                     # Gibt "hierarchies" zurück, beschreibung ob bestimmte Konturen innerhalb von anderen liegen, z.b. kreis innerhalb rechteck
@@ -32,13 +24,25 @@ contourslist, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX
                                                                                     #  Simple= Reduzierung einer Linie auf Koord. von Anfangs- und Endpunkt
 print(f'{len(contourslist)} contour(s) found!')
 
-cv.drawContours(blank, contourslist, -1, (0,0,255), 1)  #(übergebenesBild, ÜbergebeneListe, KonturIndex= wvl. Konturen wollen wir auf dem Bild, -1 = alle, FarbeDerKonturen, DickeDerLinie )
-cv.imshow('Contours', blank)
+cv.drawContours(edges, contourslist, -1, (0,0,255), 1)  #(übergebenesBild, ÜbergebeneListe, KonturIndex= wvl. Konturen wollen wir auf dem Bild, -1 = alle, FarbeDerKonturen, DickeDerLinie )
+cv.imshow('Contours', edges)
+
+
+# # Finde Konturen im Bild
+# contours, _ = cv.findContours(edges, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+# # Identifiziere die größte geschlossene Kontur
+# largest_contour = max(contours, key=cv.contourArea)
+
+# # Erzeuge eine leere Maske
+# mask = np.zeros_like(gray_img)
+
+# # Zeichne die äußere Kante auf die Maske (ohne Füllung)
+# cv.drawContours(mask, [largest_contour], 0, 255, thickness=2)
+
+# # Zeige das Bild mit der eingefärbten äußeren Kante
+# result = cv.bitwise_and(img, img, mask=mask)
+# cv.imshow('Image with Outer Contour', result)
 
 cv.waitKey(0)
-cv.destroyAllWindows() 
-
-# Learning:
-# - zuerst Canny nutzen
-# - wenn das nicht klappt dann cv.findContoures (mit Hierarchies)
-# - wenn das nicht klappt, dann erst threshold, also binärisieren
+cv.destroyAllWindows()
