@@ -11,7 +11,7 @@ Problem: Canny-Kontur geht zwar um objekt, jedoch lässt sich diese größte Kon
 
 
 TODO:
-- Frame sodass Merkmale in Dictionary geschrieben werden, in for schleife, sodass für jedes bild die werte der 4 merkmale in tabelle zu sehen sind.
+✓ Framework sodass Merkmale in Dictionary geschrieben werden, in for schleife, sodass für jedes bild die werte der 4 merkmale in tabelle zu sehen sind.
 - Strukturmerkmale versuchen, Linien, Kreisförmigkeit
-- Farbe HSV werte
-
+(✓) Farbe HSV werte-> Wert sehr unterschiedlich?
+- bilder verkleinern, mit programm alle bilder in ordner ändern
