@@ -6,5 +6,12 @@ Farbe erkennen:
 - durchschnittliche RGB Farbwerte für Fixel innerhalb der Maske berechnen
 
 Problem: Canny-Kontur geht zwar um objekt, jedoch lässt sich diese größte Kontur bisher nicht extrahieren
-        -> es wird eine kleinere Kontur extrahiert, die das objelt nicht umschließt
+        -> es wird eine kleinere Kontur extrahiert, die das objekt nicht umschließt
         (-> Falsche Maske wird erstellt)
+
+
+TODO:
+- Frame sodass Merkmale in Dictionary geschrieben werden, in for schleife, sodass für jedes bild die werte der 4 merkmale in tabelle zu sehen sind.
+- Strukturmerkmale versuchen, Linien, Kreisförmigkeit
+- Farbe HSV werte
+
