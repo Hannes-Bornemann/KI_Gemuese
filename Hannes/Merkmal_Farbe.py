@@ -1,48 +1,29 @@
 import cv2 as cv
 import numpy as np
 
-img = cv.imread('photos/Zwiebel/Zwiebel (2).jpg')
+img = cv.imread('photos/Zwiebel/Zwiebel (13).jpg')
 img = cv.resize(img, (800, 600))
 
-# Konvertiere das Bild in den Graustufenmodus
-gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+canny = cv.Canny(img, 125, 175)         # 125, 175 war gut, sind schwellenwerte, drunter= keine kante, drüber = kante, dazwischen = kante wenn nachbarpixel kante
+cv.imshow('canny', canny)
 
-cv.imshow('gray_img', gray_img)
+# Finde Konturen im Bild
+contours, _ = cv.findContours(canny, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 
-# Wende Canny-Kanten-Erkennung an
-edges = cv.Canny(gray_img, 60, 120)
+# Identifiziere die größte geschlossene Kontur
+largest_contour = max(contours, key=cv.contourArea)
 
-cv.imshow('edges', edges)
+# Extrahiere die Region of Interest (ROI) basierend auf der größten Kontur
+x, y, w, h = cv.boundingRect(largest_contour)
+cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Grüne Farbe (0, 255, 0), Dicke 2
+cv.imshow('img', img)
+roi = img[y:y+h, x:x+w]
 
-contourslist, hierarchies = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)    
+# Berechne die durchschnittlichen RGB-Farbwerte der Pixel in der ROI
+average_color = np.mean(roi, axis=(0, 1))
 
-                                                                                    # Gibt "contours" als list zurück, welche alle Koordinaten der Konturpunkte enthält
-                                                                                    # Gibt "hierarchies" zurück, beschreibung ob bestimmte Konturen innerhalb von anderen liegen, z.b. kreis innerhalb rechteck
-                                                                                    # "canny" = übergebenes Bild, 
-                                                                                    # "cv.RETR_List"            =modus alle Konturen (TREE=alle hierarchischen Konturen, EXTERNAL=alle Außenkonturen)
-                                                                                    # "cv.CHAIN_APPROX_SIMPLE"  =Approximationsmethode, None= keine, d.h. alle Pixel Koordinaten werden ausgegeben,
-                                                                                    #  Simple= Reduzierung einer Linie auf Koord. von Anfangs- und Endpunkt
-print(f'{len(contourslist)} contour(s) found!')
-
-cv.drawContours(edges, contourslist, -1, (0,0,255), 1)  #(übergebenesBild, ÜbergebeneListe, KonturIndex= wvl. Konturen wollen wir auf dem Bild, -1 = alle, FarbeDerKonturen, DickeDerLinie )
-cv.imshow('Contours', edges)
-
-
-# # Finde Konturen im Bild
-# contours, _ = cv.findContours(edges, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-
-# # Identifiziere die größte geschlossene Kontur
-# largest_contour = max(contours, key=cv.contourArea)
-
-# # Erzeuge eine leere Maske
-# mask = np.zeros_like(gray_img)
-
-# # Zeichne die äußere Kante auf die Maske (ohne Füllung)
-# cv.drawContours(mask, [largest_contour], 0, 255, thickness=2)
-
-# # Zeige das Bild mit der eingefärbten äußeren Kante
-# result = cv.bitwise_and(img, img, mask=mask)
-# cv.imshow('Image with Outer Contour', result)
+# Ausgabe der durchschnittlichen Farbwerte
+print("Durchschnittliche Farbwerte (BGR):", average_color)
 
 cv.waitKey(0)
-cv.destroyAllWindows()
+cv.destroyAllWindows() 
