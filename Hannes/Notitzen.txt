@@ -14,4 +14,4 @@ TODO:
 ✓ Framework sodass Merkmale in Dictionary geschrieben werden, in for schleife, sodass für jedes bild die werte der 4 merkmale in tabelle zu sehen sind.
 - Strukturmerkmale versuchen, Linien, Kreisförmigkeit
 (✓) Farbe HSV werte-> Wert sehr unterschiedlich?
-- bilder verkleinern, mit programm alle bilder in ordner ändern
+✓ bilder verkleinern, mit programm alle bilder in ordner ändern
