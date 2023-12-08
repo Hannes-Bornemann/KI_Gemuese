@@ -15,3 +15,10 @@ TODO:
 - Strukturmerkmale versuchen, Linien, Kreisförmigkeit
 (✓) Farbe HSV werte-> Wert sehr unterschiedlich?
 ✓ bilder verkleinern, mit programm alle bilder in ordner ändern
+
+
+Basis-KI- Verfahren:
+-Bayes
+-Decision Tree
+-Nearest Neighbour
+(Random Forest)
