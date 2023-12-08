@@ -22,3 +22,9 @@ Basis-KI- Verfahren:
 -Decision Tree
 -Nearest Neighbour
 (Random Forest)
+
+
+2023-12-08
+next steps:
+- Beispielbilder anzeigen lassen
+- Michelles Funktionen benutzen

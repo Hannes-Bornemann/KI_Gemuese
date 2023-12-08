@@ -7,7 +7,7 @@ excel_layout = {
         'Green': [],
         'Red': [],
         'Hue': [],
-        #hier weitere Merkmale hin
+        # hier weitere Merkmale hin
     }
 
 for i in range (1,2):
@@ -16,14 +16,12 @@ for i in range (1,2):
     img = cv.imread(path)
     img = cv.resize(img, (800, 600))
 
-
     # hier Merkmale einfügen 
    
     # und in dataframe schreiben:
     # value_hue = excel_layout['Hue']
     # value_hue.append(average_hue)
 
-    
     df = pd.DataFrame(excel_layout) 
     df.to_excel('output.xlsx', index=False, startrow=0, startcol=0)
 
