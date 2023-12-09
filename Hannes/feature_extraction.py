@@ -19,14 +19,18 @@ files = os.listdir(input_dir)   # speichert dateinamen in liste
 max_files = 5
 count = 0
 for file in files:
+    # Bilder Verkleinern und in Ornder speichern
     input_path = os.path.join(input_dir, file)
     output_path = os.path.join(output_dir, file)
     img = cv.imread(input_path)
-    img = cv.resize(img, (128, 128))
+    img = cv.resize(img, (400, 300))
     cv.imwrite(output_path, img)
 
     ### Funktionen  ###
-    average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, excel_layout, count)
+    img, average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, excel_layout, count)
+
+    # Bild anzeigen lassen
+    cv.imshow(f'img{count}', img)
 
     # werte an value im dictionary hängen
     value_bLue = excel_layout['Blue']
@@ -39,7 +43,7 @@ for file in files:
     value_hue.append(average_hue)
 
     count += 1
-    if count >= 10:
+    if count >= max_files:
         break
 
 df = pd.DataFrame(excel_layout) 
