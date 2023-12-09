@@ -10,41 +10,41 @@ excel_layout = {
         'Red': [],
         'Hue': [],
     }
-
 input_dir = 'photos/Zwiebel'
 output_dir = 'photos_reduced/Zwiebel_reduced'
-
 files = os.listdir(input_dir)   # speichert dateinamen in liste
 
-max_files = 5
-count = 0
+new_width, new_height = (125, 125) # (gewünschte Auflösung (Breite, Höhe) des bildes für die Merkmalerkennung)
+zoomfactor = int(600 / max(new_width, new_height)) # zahl 600 ist die größte seite des Anzeigefensters
+zoom = (new_width*zoomfactor, new_height*zoomfactor) # Berechnung des Zoomfaktors (nur für Anzeige)
+
+max_files = 2  # Anzahl bilder die gelesen werden sollen
+count = 1
 for file in files:
-    # Bilder Verkleinern und in Ornder speichern
-    input_path = os.path.join(input_dir, file)
-    output_path = os.path.join(output_dir, file)
-    img = cv.imread(input_path)
-    img = cv.resize(img, (400, 300))
-    cv.imwrite(output_path, img)
+    # Bild aus Ordner einlesen, verkleinern in Zielordner schreiben und zurück geben
+    img = feature_extraction_functions.resize(input_dir, output_dir, file, new_width, new_height)
 
-    ### Funktionen  ###
+    ### Merkmale extrahieren  ###
     img, average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, excel_layout, count)
+    # img = feature_extraction_functions.contour(img)
 
-    # Bild anzeigen lassen
+    # Bild vergrößert anzeigen lassen
+    img = cv.resize(img, zoom)
     cv.imshow(f'img{count}', img)
 
     # werte an value im dictionary hängen
-    value_bLue = excel_layout['Blue']
-    value_bLue.append(average_blue)
-    value_green = excel_layout['Green']
-    value_green.append(average_green)
-    value_red = excel_layout['Red']
-    value_red.append(average_red)
-    value_hue = excel_layout['Hue']
-    value_hue.append(average_hue)
-
-    count += 1
+    # value_bLue = excel_layout['Blue']
+    # value_bLue.append(average_blue)
+    # value_green = excel_layout['Green']
+    # value_green.append(average_green)
+    # value_red = excel_layout['Red']
+    # value_red.append(average_red)
+    # value_hue = excel_layout['Hue']
+    # value_hue.append(average_hue)
     if count >= max_files:
         break
+    count += 1
+    
 
 df = pd.DataFrame(excel_layout) 
 df.to_excel('output.xlsx', index=False, startrow=0, startcol=0)

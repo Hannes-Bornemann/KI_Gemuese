@@ -26,5 +26,5 @@ Basis-KI- Verfahren:
 
 2023-12-08
 next steps:
-- Beispielbilder anzeigen lassen
-- Michelles Funktionen benutzen
+✓ Beispielbilder anzeigen lassen
+X Michelles Funktionen benutzen -> Funktioniert nicht, wenn Bilder geringe Auflösung haben

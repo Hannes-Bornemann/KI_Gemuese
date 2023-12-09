@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+import os
 
 def mean_colours(f_img, f_excel_layout, f_count):
     canny = cv.Canny(f_img, 50, 100)
@@ -21,6 +22,53 @@ def mean_colours(f_img, f_excel_layout, f_count):
 
     return f_img, average_blue, average_green, average_red, average_hue
 
+def resize(input_dir, output_dir, file, new_width, new_height):
+    # Bilder Verkleinern und in Ordner speichern
+    input_path = os.path.join(input_dir, file)
+    output_path = os.path.join(output_dir, file)
+    img = cv.imread(input_path) # Bild ist 3:4
+    height, width = img.shape[:2]
 
-
+    # print ("höhe: ", height, "breite: ", width, "höhe/breite: ", width/height)
     
+    # Wenn bild in Breite erweitert werden muss:
+    if width/height < new_width/new_height:
+        enlargement = int((height * (new_width/new_height) - width) / 2)
+        up = 0
+        down = 0
+        left = enlargement
+        right = enlargement
+    # Wenn bild in Höhe erweitert werden muss:
+    elif width/height > new_width/new_height:
+        enlargement = int((width / (new_width/new_height) - height) / 2)
+        up = enlargement
+        down = enlargement
+        left = 0
+        right = 0
+    # Wenn Bild nicht erweitert werden muss:
+    else:
+        up, down, left, right = (0,0,0,0)
+    img_enlarged = cv.copyMakeBorder(img, up, down, left, right, cv.BORDER_REPLICATE) # Altenativ: ...,cv.BORDER_CONSTANT, value=[0, 0, 0]
+
+    img = cv.resize(img_enlarged, (new_width, new_height))
+
+    # Verkleinertes Bild in Ordner speichern
+    cv.imwrite(output_path, img)
+    # Verkleinertes Bild zurück geben
+    return img
+
+def contour(image):
+    img = cv.cvtColor(image, cv.COLOR_BGR2GRAY) #gray
+    # img = cv.GaussianBlur(img, (5, 5), cv.BORDER_DEFAULT) #blur
+    img = cv.Canny(img, 100, 150) #edges
+    # finde Konturen, speichere sie in Liste und gebe Anzahl aus
+    contours, hierarchy = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+    print("Anzahl der Konturen: ", len(contours))
+    # finde die größte Kontur
+    largest_contour = max(contours, key=cv.contourArea) 
+    # Zeichne die größte Kontur auf das Bild
+    cv.drawContours(img, [largest_contour], 0, (0, 255, 0), 2)  # Grüne Farbe, Linienbreite 2
+    
+    return img
+
+
