@@ -58,11 +58,13 @@ def resize(input_dir, output_dir, file, new_width, new_height):
     return img
 
 def contour(image):
-    img = cv.cvtColor(image, cv.COLOR_BGR2GRAY) #gray
-    # img = cv.GaussianBlur(img, (5, 5), cv.BORDER_DEFAULT) #blur
-    img = cv.Canny(img, 125, 150) #edges
+    # img = cv.cvtColor(image, cv.COLOR_BGR2GRAY) #gray
+    #img1 = cv.convertScaleAbs(image, alpha=1.3, beta=20) #Versuch, Schatten zu verringern
+    #img1 = cv.GaussianBlur(image, (3,3), cv.BORDER_DEFAULT)
+    img1 = cv.Canny(image, 100, 150) #edges
+    # img = cv.dilate(img, None, iterations=6)
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
-    contours, hierarchy = cv.findContours(img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     print("Anzahl der Konturen: ", len(contours))
     # finde die größte Kontur
     largest_contour = max(contours, key=cv.contourArea) 
