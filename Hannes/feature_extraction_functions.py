@@ -62,14 +62,16 @@ def contour(image):
     #img1 = cv.convertScaleAbs(image, alpha=1.3, beta=20) #Versuch, Schatten zu verringern
     #img1 = cv.GaussianBlur(image, (3,3), cv.BORDER_DEFAULT)
     img1 = cv.Canny(image, 100, 150) #edges
+    
     # img = cv.dilate(img, None, iterations=6)
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
     contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     print("Anzahl der Konturen: ", len(contours))
     # finde die größte Kontur
     largest_contour = max(contours, key=cv.contourArea) 
+    hull = cv.convexHull(largest_contour)
     # Zeichne die größte Kontur auf das Bild
-    cv.drawContours(image, [largest_contour], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+    cv.drawContours(image, [hull], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
     
     return image
 
