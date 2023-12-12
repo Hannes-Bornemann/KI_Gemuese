@@ -18,7 +18,7 @@ new_width, new_height = (125, 125) # (gewünschte Auflösung (Breite, Höhe) des
 zoomfactor = int(600 / max(new_width, new_height)) # zahl 600 ist die größte seite des Anzeigefensters
 zoom = (new_width*zoomfactor, new_height*zoomfactor) # Berechnung des Zoomfaktors (nur für Anzeige)
 
-max_files = 20  # Anzahl bilder die gelesen werden sollen
+max_files = 10  # Anzahl bilder die gelesen werden sollen
 count = 1
 for file in files:
     # Bild aus Ordner einlesen, verkleinern in Zielordner schreiben und zurück geben
@@ -26,7 +26,8 @@ for file in files:
 
     ### Merkmale extrahieren  ###
     # img, average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, excel_layout, count)
-    img = feature_extraction_functions.contour(img)
+    # img = feature_extraction_functions.contour(img)
+    img = feature_extraction_functions.contour_number(img)
 
     # Bild vergrößert anzeigen lassen
     img = cv.resize(img, zoom)

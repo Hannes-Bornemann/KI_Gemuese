@@ -61,7 +61,7 @@ def contour(image):
     # img = cv.cvtColor(image, cv.COLOR_BGR2GRAY) #gray
     #img1 = cv.convertScaleAbs(image, alpha=1.3, beta=20) #Versuch, Schatten zu verringern
     #img1 = cv.GaussianBlur(image, (3,3), cv.BORDER_DEFAULT)
-    img1 = cv.Canny(image, 100, 150) #edges
+    img1 = cv.Canny(image, 100, 50) #edges
     
     # img = cv.dilate(img, None, iterations=6)
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
@@ -75,4 +75,11 @@ def contour(image):
     
     return image
 
+def contour_number(image):
+    img1 = cv.Canny(image, 100, 50) #edges
+    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+    print("Anzahl der Konturen: ", len(contours))
+    cv.drawContours(image, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+
+    return image
 
