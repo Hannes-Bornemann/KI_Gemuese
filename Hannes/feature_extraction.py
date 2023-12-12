@@ -10,8 +10,8 @@ excel_layout = {
         'Red': [],
         'Hue': [],
     }
-input_dir = 'photos/Zwiebel'
-output_dir = 'photos_reduced/Zwiebel_reduced'
+input_dir = 'photos/Kartoffel'
+output_dir = 'photos_reduced/Kartoffel_reduced'
 files = os.listdir(input_dir)   # speichert dateinamen in liste
 
 new_width, new_height = (125, 125) # (gewünschte Auflösung (Breite, Höhe) des bildes für die Merkmalerkennung)
@@ -26,12 +26,14 @@ for file in files:
 
     ### Merkmale extrahieren  ###
     # img, average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, excel_layout, count)
-    # img = feature_extraction_functions.contour(img)
-    img = feature_extraction_functions.contour_number(img)
+    img, mask = feature_extraction_functions.mean_colours(img)
+    # img = feature_extraction_functions.contour_number(img)
 
     # Bild vergrößert anzeigen lassen
-    img = cv.resize(img, zoom)
-    cv.imshow(f'img{count}', img)
+    mask = cv.resize(mask, zoom)
+    cv.imshow(f'img{count}', mask)
+
+    # cv.imshow("maske",mask)
 
     # werte an value im dictionary hängen
     # value_bLue = excel_layout['Blue']
