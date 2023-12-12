@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-# change
+
 def mean_colours(f_img, f_excel_layout, f_count):
     canny = cv.Canny(f_img, 50, 100)
     contours, _ = cv.findContours(canny, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)  # Finde Konturen im Bild
