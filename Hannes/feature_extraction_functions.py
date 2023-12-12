@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-
+"""
 def mean_colours(f_img, f_excel_layout, f_count):
     canny = cv.Canny(f_img, 50, 100)
     contours, _ = cv.findContours(canny, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)  # Finde Konturen im Bild
@@ -21,7 +21,7 @@ def mean_colours(f_img, f_excel_layout, f_count):
     average_hue =average_hsv[0]
 
     return f_img, average_blue, average_green, average_red, average_hue
-
+"""
 def resize(input_dir, output_dir, file, new_width, new_height):
     # Bilder Verkleinern und in Ordner speichern
     input_path = os.path.join(input_dir, file)
@@ -57,7 +57,7 @@ def resize(input_dir, output_dir, file, new_width, new_height):
     # Verkleinertes Bild zurück geben
     return img
 
-def contour(image):
+def mean_colours(image):
     # img = cv.cvtColor(image, cv.COLOR_BGR2GRAY) #gray
     #img1 = cv.convertScaleAbs(image, alpha=1.3, beta=20) #Versuch, Schatten zu verringern
     #img1 = cv.GaussianBlur(image, (3,3), cv.BORDER_DEFAULT)
@@ -72,8 +72,14 @@ def contour(image):
     hull = cv.convexHull(largest_contour)
     # Zeichne die größte Kontur auf das Bild
     cv.drawContours(image, [hull], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+
+    # create an empty mask
+    mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
+    # fill the contour into the mask
+    cv.fillPoly(mask, [hull], (255))
     
-    return image
+    
+    return image, mask
 
 def contour_number(image):
     img1 = cv.Canny(image, 100, 50) #edges
