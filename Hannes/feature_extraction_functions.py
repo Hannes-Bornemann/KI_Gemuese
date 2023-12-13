@@ -57,20 +57,31 @@ def resize(input_dir, output_dir, file, new_width, new_height):
     # Verkleinertes Bild zurück geben
     return img
 
-def mean_colours(image):
-    # img = cv.cvtColor(image, cv.COLOR_BGR2GRAY) #gray
-    #img1 = cv.convertScaleAbs(image, alpha=1.3, beta=20) #Versuch, Schatten zu verringern
-    #img1 = cv.GaussianBlur(image, (3,3), cv.BORDER_DEFAULT)
+def contour_number(image, count, zoom):
     img1 = cv.Canny(image, 100, 50) #edges
+    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
     
-    # img = cv.dilate(img, None, iterations=6)
+    contour_number = int(len(contours))
+    print("Anzahl der Konturen: ", contour_number)
+    cv.drawContours(image, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+
+    # Bild vergrößert anzeigen lassen
+    # image = cv.resize(image, zoom)
+    # cv.imshow(f'img{count}', image)
+
+    return contour_number
+
+def mean_colours(image, count, zoom):
+
+    img1 = cv.Canny(image, 100, 50) #edges
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
     contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    print("Anzahl der Konturen: ", len(contours))
+    # print("Anzahl der Konturen: ", len(contours))
     # finde die größte Kontur
     largest_contour = max(contours, key=cv.contourArea) 
+    # finde konvexe Hülle
     hull = cv.convexHull(largest_contour)
-    # Zeichne die größte Kontur auf das Bild
+    # Zeichne konvexe Hülle auf das Bild
     cv.drawContours(image, [hull], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
 
     # create an empty mask
@@ -78,14 +89,21 @@ def mean_colours(image):
     # fill the contour into the mask
     cv.fillPoly(mask, [hull], (255))
     
-    
-    return image, mask
+     # Pixel in der Maske auswählen
+    pixels_in_maske = image[mask == 255]
 
-def contour_number(image):
-    img1 = cv.Canny(image, 100, 50) #edges
-    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
-    print("Anzahl der Konturen: ", len(contours))
-    cv.drawContours(image, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+    # Farbmittelwerte für Kanäle BGR in der Maske berechnen
+    average_blue = np.mean(pixels_in_maske[:, 0])
+    average_green = np.mean(pixels_in_maske[:, 1])
+    average_red = np.mean(pixels_in_maske[:, 2])
 
-    return image
+    # Farbmittelwert für Hue Kanal in der Maske berechnen
+    hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+    pixels_in_maske_hsv = hsv[mask == 255]
+    average_hue = np.mean(pixels_in_maske_hsv[:, 0])
 
+    # Bild vergrößert anzeigen lassen
+    mask = cv.resize(mask, zoom)
+    cv.imshow(f'img{count}', mask)
+
+    return average_blue, average_green, average_red, average_hue
