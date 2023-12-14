@@ -63,3 +63,4 @@ predictions = nb_classifier.predict(X_test)
 # Ausgabe der Vorhersagen
 print("Predictions:", predictions)
 
+#hi
