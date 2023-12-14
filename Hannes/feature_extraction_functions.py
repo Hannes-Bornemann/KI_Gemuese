@@ -58,14 +58,16 @@ def resize(input_dir, output_dir, file, new_width, new_height):
     return img
 
 def contour_number(image, count, zoom):
-    img1 = cv.Canny(image, 100, 50) #edges
+    # Kopiere das Originalbild, um es nicht zu verändern
+    image_copy = image.copy()
+    img1 = cv.Canny(image_copy, 100, 50) #edges
     contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
     
     contour_number = int(len(contours))
-    print("Anzahl der Konturen: ", contour_number)
-    cv.drawContours(image, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+    # print("Anzahl der Konturen: ", contour_number)
+    cv.drawContours(image_copy, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
 
-    # Bild vergrößert anzeigen lassen
+    # # Bild vergrößert anzeigen lassen
     # image = cv.resize(image, zoom)
     # cv.imshow(f'img{count}', image)
 
@@ -73,7 +75,8 @@ def contour_number(image, count, zoom):
 
 def mean_colours(image, count, zoom):
 
-    img1 = cv.Canny(image, 100, 50) #edges
+    image_copy = image.copy()
+    img1 = cv.Canny(image_copy, 100, 50) #edges
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
     contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     # print("Anzahl der Konturen: ", len(contours))
@@ -82,7 +85,7 @@ def mean_colours(image, count, zoom):
     # finde konvexe Hülle
     hull = cv.convexHull(largest_contour)
     # Zeichne konvexe Hülle auf das Bild
-    cv.drawContours(image, [hull], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
+    cv.drawContours(image_copy, [hull], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
 
     # create an empty mask
     mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
@@ -103,7 +106,42 @@ def mean_colours(image, count, zoom):
     average_hue = np.mean(pixels_in_maske_hsv[:, 0])
 
     # Bild vergrößert anzeigen lassen
-    mask = cv.resize(mask, zoom)
-    cv.imshow(f'img{count}', mask)
+    # image_copy = cv.resize(image_copy, zoom)
+    # cv.imshow(f'img{count}', image_copy)
 
     return average_blue, average_green, average_red, average_hue
+
+def extent(image, count, zoom):
+
+    image_copy = image.copy()
+    img1 = cv.Canny(image_copy, 100, 50) #edges
+    contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    largest_contour = max(contours, key=cv.contourArea) 
+    hull = cv.convexHull(largest_contour)
+
+    rotated_rect = cv.minAreaRect(hull)
+
+    # RotatedRect zeichnen
+    box_points = cv.boxPoints(rotated_rect).astype(int)
+
+    cv.drawContours(image_copy, [box_points], 0, (0, 255, 0), 1)
+
+    # Bild vergrößert anzeigen lassen
+    image_copy = cv.resize(image_copy, zoom)
+    cv.imshow(f'img{count}', image_copy)
+
+    w= np.linalg.norm(box_points[0] - box_points[1])
+    h = np.linalg.norm(box_points[1] - box_points[2])
+    longer_side = max(w, h)
+    shorter_side = min(w,h)
+    A_box = w*h
+    A_mask = cv.contourArea(hull)
+
+    extent = A_mask / A_box
+
+    print("Fläche der Box in pixel: ", A_box, "Fläche des Objekts: ", A_mask, "Ausdehnung Extent: ", extent)
+
+    aspect_ratio = shorter_side/longer_side
+    print("Seitenverhältnis Aspect Ratio: ", aspect_ratio)
+
+    return extent, aspect_ratio

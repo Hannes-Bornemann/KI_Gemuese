@@ -28,3 +28,21 @@ Basis-KI- Verfahren:
 next steps:
 ✓ Beispielbilder anzeigen lassen
 X Michelles Funktionen benutzen -> Funktioniert nicht, wenn Bilder geringe Auflösung haben
+
+
+2023-12-14
+mittelwerte Kartoffel (20 bilder, davon 4 schlecht):
+contour number	Blue	Green	Red	Hue	extent	aspect ratio
+44,90	        49,38	77,98	102,57	21,17	0,79	0,76
+
+mittelwerte Karotte (20 bilder, davon 0 schlecht):
+contour number	Blue	Green	Red	Hue	extent	aspect ratio
+57,45	        46,45	74,35	130,17	16,60	0,87	0,17
+
+mittelwerte Zwiebel (20 bilder, davon 4 schlecht):
+contour number	Blue	Green	Red	Hue	extent	aspect ratio
+41,35	        65,52	99,87	132,54	23,74	0,79	0,85
+
+-> für karotte:         aspect ratio
+-> für Kartoffel:       Red
+-> für Zwiebel:         Green, Blue
