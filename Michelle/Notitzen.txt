@@ -1,0 +1,76 @@
+Farbe erkennen:
+
+- Canny anwenden Kante um Objekt
+- Maske erstellen, nur die Pixel innerhalb größter Kontur beibehalten
+- Maske auf Bild anwenden
+- durchschnittliche RGB Farbwerte für Fixel innerhalb der Maske berechnen
+
+Problem: Canny-Kontur geht zwar um objekt, jedoch lässt sich diese größte Kontur bisher nicht extrahieren
+        -> es wird eine kleinere Kontur extrahiert, die das objekt nicht umschließt
+        (-> Falsche Maske wird erstellt)
+
+
+TODO:
+✓ Framework sodass Merkmale in Dictionary geschrieben werden, in for schleife, sodass für jedes bild die werte der 4 merkmale in tabelle zu sehen sind.
+- Strukturmerkmale versuchen, Linien, Kreisförmigkeit
+(✓) Farbe HSV werte-> Wert sehr unterschiedlich?
+✓ bilder verkleinern, mit programm alle bilder in ordner ändern
+
+
+Basis-KI- Verfahren:
+-Bayes
+-Decision Tree
+-Nearest Neighbour
+(Random Forest)
+
+
+2023-12-08
+next steps:
+✓ Beispielbilder anzeigen lassen
+X Michelles Funktionen benutzen -> Funktioniert nicht, wenn Bilder geringe Auflösung haben
+
+
+2023-12-14
+mittelwerte Kartoffel (20 bilder, davon 4 schlecht):
+contour number	Blue	Green	Red	Hue	extent	aspect ratio
+44,90	        49,38	77,98	102,57	21,17	0,79	0,76
+
+mittelwerte Karotte (20 bilder, davon 0 schlecht):
+contour number	Blue	Green	Red	Hue	extent	aspect ratio
+57,45	        46,45	74,35	130,17	16,60	0,87	0,17
+
+mittelwerte Zwiebel (20 bilder, davon 4 schlecht):
+contour number	Blue	Green	Red	Hue	extent	aspect ratio
+41,35	        65,52	99,87	132,54	23,74	0,79	0,85
+
+-> für karotte:         aspect ratio
+-> für Kartoffel:       Red
+-> für Zwiebel:         Green, Blue
+
+mittelwert contour number
+                CHAIN_APPROX_NONE       CHAIN_APPROX_SIMPLE
+Kartoffel       41,35                   41,35
+karotte         57,45                   57,45
+Zwiebel         ...                     ...
+->kein Unterschied von contour Number!
+
+largest contour schlechte bilder:
+                CHAIN_APPROX_NONE       CHAIN_APPROX_SIMPLE
+Kartoffel       4                       4
+karotte         ...
+Zwiebel         4                       4
+-> kein UNterschied!
+
+alle Werte in einer Funktion:
+mittelwerte Kartoffel (20 bilder, davon 4 schlecht):
+contour number  aspect ratio    extent  Blue	Green	Red	Hue
+44,90	        0,76	        0,79	37,97	91,81	89,10	21,17
+
+mittelwerte Karotte (20 bilder, davon x schlecht):
+contour number  aspect ratio    extent  Blue	Green	Red	Hue
+57,45	        0,17	        0,87	30,52	88,00	112,69	16,60
+
+mittelwerte Zwiebel (20 bilder, davon 4 schlecht):
+contour number  aspect ratio    extent  Blue	Green	Red	Hue	
+41,35	        0,85	        0,79	53,70	111,55	117,32	23,74
+
