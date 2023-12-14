@@ -59,4 +59,18 @@ largest contour schlechte bilder:
 Kartoffel       4                       4
 karotte         ...
 Zwiebel         4                       4
--> kein UNterschied
+-> kein UNterschied!
+
+alle Werte in einer Funktion:
+mittelwerte Kartoffel (20 bilder, davon 4 schlecht):
+contour number  aspect ratio    extent  Blue	Green	Red	Hue
+44,90	        0,76	        0,79	37,97	91,81	89,10	21,17
+
+mittelwerte Karotte (20 bilder, davon x schlecht):
+contour number  aspect ratio    extent  Blue	Green	Red	Hue
+57,45	        0,17	        0,87	30,52	88,00	112,69	16,60
+
+mittelwerte Zwiebel (20 bilder, davon 4 schlecht):
+contour number  aspect ratio    extent  Blue	Green	Red	Hue	
+41,35	        0,85	        0,79	53,70	111,55	117,32	23,74
+

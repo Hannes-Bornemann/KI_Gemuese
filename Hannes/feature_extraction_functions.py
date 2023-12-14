@@ -129,16 +129,43 @@ def extent(image, count, zoom):
 def get_Features(image, count, zoom):
      # Kopiere das Originalbild, um es nicht zu verändern
     image_copy = image.copy()
+
+    # contour_number
     img1 = cv.Canny(image_copy, 100, 50) # erzeugt einkanaliges Bild mit Kanten drauf
     contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE) # zählt Kanten, speichert sie in Liste
     contour_number = int(len(contours)) # Zählen der Listeneinträge
-    # print("Anzahl der Konturen: ", contour_number)
-    cv.drawContours(image_copy, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 1
+    # cv.drawContours(image_copy, contours, -1, (0, 255, 0), 1)  # Alle Konturen auf bild zeichnen
 
+    # aspect ratio, extent
+    largest_contour = max(contours, key=cv.contourArea) 
+    hull = cv.convexHull(largest_contour)
+    cv.drawContours(image_copy, [hull], 0, (0, 255, 0), 1)  # konvexe Hülle auf Bild zeichnen
+    rotated_rect = cv.minAreaRect(hull)
+    box_points = cv.boxPoints(rotated_rect).astype(int)
+    cv.drawContours(image_copy, [box_points], 0, (0, 255, 0), 1)    # Bounding Box auf Bild zeichnen
+    w= np.linalg.norm(box_points[0] - box_points[1])
+    h = np.linalg.norm(box_points[1] - box_points[2])
+    longer_side = max(w, h)
+    shorter_side = min(w,h)
+    A_box = w*h
+    A_mask = cv.contourArea(hull)
+    extent = A_mask / A_box
+    aspect_ratio = shorter_side/longer_side
+
+    # mean colours
+    mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)   # leere Maske erzeugen
+    cv.fillPoly(mask, [hull], (255))    # ausgefüllte hülle in maske schreiben
+    pixel_in_mask = image_copy[mask == 255]    # Maske über Bild legen und relevante Pixel auswählen
+    average_blue = np.mean(pixel_in_mask[:, 0])   #  Farbmittelwerte für Kanäle BGR in der Maske berechnen
+    average_green = np.mean(pixel_in_mask[:, 1])
+    average_red = np.mean(pixel_in_mask[:, 2])
+    hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)   # Farbmittelwert für Hue Kanal in der Maske berechnen
+    pixel_in_mask_hsv = hsv[mask == 255]
+    average_hue = np.mean(pixel_in_mask_hsv[:, 0])
 
     # Bild vergrößert anzeigen lassen
     image_copy = cv.resize(image_copy, zoom)
     cv.imshow(f'img{count}', image_copy)
 
-    return contour_number
+    return contour_number, aspect_ratio, extent, average_blue, average_green, average_red , average_hue
     
