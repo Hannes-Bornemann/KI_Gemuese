@@ -1,0 +1,30 @@
+Farbe erkennen:
+
+- Canny anwenden Kante um Objekt
+- Maske erstellen, nur die Pixel innerhalb größter Kontur beibehalten
+- Maske auf Bild anwenden
+- durchschnittliche RGB Farbwerte für Fixel innerhalb der Maske berechnen
+
+Problem: Canny-Kontur geht zwar um objekt, jedoch lässt sich diese größte Kontur bisher nicht extrahieren
+        -> es wird eine kleinere Kontur extrahiert, die das objekt nicht umschließt
+        (-> Falsche Maske wird erstellt)
+
+
+TODO:
+✓ Framework sodass Merkmale in Dictionary geschrieben werden, in for schleife, sodass für jedes bild die werte der 4 merkmale in tabelle zu sehen sind.
+- Strukturmerkmale versuchen, Linien, Kreisförmigkeit
+(✓) Farbe HSV werte-> Wert sehr unterschiedlich?
+✓ bilder verkleinern, mit programm alle bilder in ordner ändern
+
+
+Basis-KI- Verfahren:
+-Bayes
+-Decision Tree
+-Nearest Neighbour
+(Random Forest)
+
+
+2023-12-08
+next steps:
+✓ Beispielbilder anzeigen lassen
+X Michelles Funktionen benutzen -> Funktioniert nicht, wenn Bilder geringe Auflösung haben
