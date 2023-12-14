@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 import feature_extracting_functions
-
+# change
 
 image_path = "/home/michelle/Documents/Master_Sem1/Künstliche_Intelligenz/Projekt/onions/20231025_163732.jpg"
 image = cv2.imread(image_path)
