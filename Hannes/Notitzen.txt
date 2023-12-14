@@ -46,3 +46,17 @@ contour number	Blue	Green	Red	Hue	extent	aspect ratio
 -> für karotte:         aspect ratio
 -> für Kartoffel:       Red
 -> für Zwiebel:         Green, Blue
+
+mittelwert contour number
+                CHAIN_APPROX_NONE       CHAIN_APPROX_SIMPLE
+Kartoffel       41,35                   41,35
+karotte         57,45                   57,45
+Zwiebel         ...                     ...
+->kein Unterschied von contour Number!
+
+largest contour schlechte bilder:
+                CHAIN_APPROX_NONE       CHAIN_APPROX_SIMPLE
+Kartoffel       4                       4
+karotte         ...
+Zwiebel         4                       4
+-> kein UNterschied
