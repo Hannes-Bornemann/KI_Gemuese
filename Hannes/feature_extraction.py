@@ -6,12 +6,12 @@ import feature_extraction_functions
 
 excel_layout = {
     'contour number': [],
-    'Blue': [],
-    'Green': [],
-    'Red': [],
-    'Hue': [],
-    'extent': [],
-    'aspect ratio': []
+    # 'Blue': [],
+    # 'Green': [],
+    # 'Red': [],
+    # 'Hue': [],
+    # 'extent': [],
+    # 'aspect ratio': []
     }
 input_dir = 'photos/Zwiebel'
 output_dir = 'photos_reduced/Zwiebel_reduced'
@@ -29,18 +29,20 @@ for file in files:
     img = feature_extraction_functions.resize(input_dir, output_dir, file, new_width, new_height)
 
     # finale Merkmale:
-    contour_number = feature_extraction_functions.contour_number(img, count, zoom)
-    average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, count, zoom)
-    extent, aspect_ratio = feature_extraction_functions.extent(img, count, zoom)
+    # contour_number = feature_extraction_functions.contour_number(img, count, zoom)
+    # average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, count, zoom)
+    # extent, aspect_ratio = feature_extraction_functions.extent(img, count, zoom)
+
+    contour_number = feature_extraction_functions.get_Features(img, count, zoom)
 
     # werte an value im dictionary hängen
     excel_layout['contour number'].append(contour_number)
-    excel_layout['Blue'].append(average_blue)
-    excel_layout['Green'].append(average_green)
-    excel_layout['Red'].append(average_red)
-    excel_layout['Hue'].append(average_hue)
-    excel_layout['extent'].append(extent)
-    excel_layout['aspect ratio'].append(aspect_ratio)
+    # excel_layout['Blue'].append(average_blue)
+    # excel_layout['Green'].append(average_green)
+    # excel_layout['Red'].append(average_red)
+    # excel_layout['Hue'].append(average_hue)
+    # excel_layout['extent'].append(extent)
+    # excel_layout['aspect ratio'].append(aspect_ratio)
 
     if count >= max_files:
         break

@@ -1,27 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
-"""
-def mean_colours(f_img, f_excel_layout, f_count):
-    canny = cv.Canny(f_img, 50, 100)
-    contours, _ = cv.findContours(canny, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)  # Finde Konturen im Bild
-    largest_contour = max(contours, key=cv.contourArea)                             # Identifiziere die größte geschlossene Kontur
-    x, y, w, h = cv.boundingRect(largest_contour)                                   # Extrahiere die Region of Interest (ROI) basierend auf der größten Kontur
-    cv.rectangle(f_img, (x, y), (x + w, y + h), (0, 255, 0), 2)                     # Grüne Farbe (0, 255, 0), Dicke 2
-    #cv.imshow(f'img{f_count}', f_img)
 
-    roi_bgr = f_img[y:y+h, x:x+w]                     # Cropping
-    roi_hsv = cv.cvtColor(roi_bgr, cv.COLOR_BGR2HSV)
-    average_bgr = np.mean(roi_bgr, axis=(0, 1))   # Berechne die durchschnittlichen BGR-Farbwerte der Pixel in der ROI
-    average_hsv = np.mean(roi_hsv, axis=(0, 1))
-
-    average_blue =average_bgr[0]
-    average_green =average_bgr[1]
-    average_red =average_bgr[2]
-    average_hue =average_hsv[0]
-
-    return f_img, average_blue, average_green, average_red, average_hue
-"""
 def resize(input_dir, output_dir, file, new_width, new_height):
     # Bilder Verkleinern und in Ordner speichern
     input_path = os.path.join(input_dir, file)
@@ -61,7 +41,7 @@ def contour_number(image, count, zoom):
     # Kopiere das Originalbild, um es nicht zu verändern
     image_copy = image.copy()
     img1 = cv.Canny(image_copy, 100, 50) #edges
-    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
+    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
     
     contour_number = int(len(contours))
     # print("Anzahl der Konturen: ", contour_number)
@@ -78,7 +58,7 @@ def mean_colours(image, count, zoom):
     image_copy = image.copy()
     img1 = cv.Canny(image_copy, 100, 50) #edges
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
-    contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     # print("Anzahl der Konturen: ", len(contours))
     # finde die größte Kontur
     largest_contour = max(contours, key=cv.contourArea) 
@@ -106,8 +86,8 @@ def mean_colours(image, count, zoom):
     average_hue = np.mean(pixels_in_maske_hsv[:, 0])
 
     # Bild vergrößert anzeigen lassen
-    # image_copy = cv.resize(image_copy, zoom)
-    # cv.imshow(f'img{count}', image_copy)
+    image_copy = cv.resize(image_copy, zoom)
+    cv.imshow(f'img{count}', image_copy)
 
     return average_blue, average_green, average_red, average_hue
 
@@ -127,8 +107,8 @@ def extent(image, count, zoom):
     cv.drawContours(image_copy, [box_points], 0, (0, 255, 0), 1)
 
     # Bild vergrößert anzeigen lassen
-    image_copy = cv.resize(image_copy, zoom)
-    cv.imshow(f'img{count}', image_copy)
+    # image_copy = cv.resize(image_copy, zoom)
+    # cv.imshow(f'img{count}', image_copy)
 
     w= np.linalg.norm(box_points[0] - box_points[1])
     h = np.linalg.norm(box_points[1] - box_points[2])
@@ -145,3 +125,20 @@ def extent(image, count, zoom):
     print("Seitenverhältnis Aspect Ratio: ", aspect_ratio)
 
     return extent, aspect_ratio
+
+def get_Features(image, count, zoom):
+     # Kopiere das Originalbild, um es nicht zu verändern
+    image_copy = image.copy()
+    img1 = cv.Canny(image_copy, 100, 50) # erzeugt einkanaliges Bild mit Kanten drauf
+    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE) # zählt Kanten, speichert sie in Liste
+    contour_number = int(len(contours)) # Zählen der Listeneinträge
+    # print("Anzahl der Konturen: ", contour_number)
+    cv.drawContours(image_copy, contours, -1, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 1
+
+
+    # Bild vergrößert anzeigen lassen
+    image_copy = cv.resize(image_copy, zoom)
+    cv.imshow(f'img{count}', image_copy)
+
+    return contour_number
+    
