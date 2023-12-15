@@ -18,16 +18,16 @@ TODO:
 
 
 Basis-KI- Verfahren:
--Bayes
--Decision Tree
--Nearest Neighbour
+-Bayes                  ->Michelle
+-Decision Tree          ->Hannes
+-Nearest Neighbour      ->Hannes
 (Random Forest)
 
 
 2023-12-08
 next steps:
 ✓ Beispielbilder anzeigen lassen
-X Michelles Funktionen benutzen -> Funktioniert nicht, wenn Bilder geringe Auflösung haben
+✓ Michelles Funktionen benutzen -> Funktioniert nicht, wenn Bilder geringe Auflösung haben ✓
 
 
 2023-12-14
