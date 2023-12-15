@@ -50,7 +50,7 @@ for file in files:
     
 
 df = pd.DataFrame(excel_layout) 
-df.to_excel('output.xlsx', index=False, startrow=0, startcol=0)
+df.to_csv('output.csv', sep=';') # csv speichert weniger Metadaten, braucht weniger Speicher, sehr sinnvoll wenn Daten iwann sehr groß werden 
 
 cv.waitKey(0)
 cv.destroyAllWindows() 
