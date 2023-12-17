@@ -4,14 +4,14 @@ import os
 from sklearn.model_selection import train_test_split
 
 
+
 import numpy as np
 
 class NaiveBayesClassifier:
     def __init__(self, classes):
         self.classes = classes
         self.class_probs = {}  # P(C)
-        self.feature_probs = {}  # P(F_i|C) für diskrete Merkmale
-        self.continuous_probs = {}  # Verteilung für kontinuierliche Merkmale
+        self.feature_params = {}  # Mittelwert (mean) und Standardabweichung (std) der Merkmale für jede Klasse
 
     def train(self, X_train, y_train):
         total_samples = len(y_train)
@@ -20,41 +20,27 @@ class NaiveBayesClassifier:
             samples_in_class = np.sum(y_train == c)
             self.class_probs[c] = samples_in_class / total_samples
 
-            for i in range(X_train.shape[1]):
-                feature_values = X_train[y_train == c, i]
+            class_samples = X_train[y_train == c, :]
 
-                # Überprüfen, ob das Merkmal diskret oder kontinuierlich ist
-                if isinstance(feature_values[0], (int, float)):
-                    # Kontinuierliches Merkmal
-                    mean, std = np.mean(feature_values), np.std(feature_values)
-                    self.continuous_probs[(i, c)] = (mean, std)
-                else:
-                    # Diskretes Merkmal
-                    unique_values, counts = np.unique(feature_values, return_counts=True)
-                    prob_dict = dict(zip(unique_values, counts / samples_in_class))
-                    if i not in self.feature_probs:
-                        self.feature_probs[i] = {}
-                    self.feature_probs[i][c] = prob_dict
+            # Berechne den Mittelwert und die Standardabweichung für jedes Merkmal und jede Klasse
+            mean, std = np.mean(class_samples, axis=0), np.std(class_samples, axis=0)
+            self.feature_params[c] = {'mean': mean, 'std': std}
 
     def predict(self, X_test):
         predictions = []
 
         for sample in X_test:
-            max_prob = -1
+            max_prob = -np.inf
             predicted_class = None
 
             for c in self.classes:
                 prob_c_given_f = np.log(self.class_probs[c])
 
+                # Verwende die Wahrscheinlichkeitsdichte der Normalverteilung für kontinuierliche Merkmale
                 for i, feature_value in enumerate(sample):
-                    if isinstance(feature_value, (int, float)):
-                        # Kontinuierliches Merkmal
-                        mean, std = self.continuous_probs.get((i, c), (0, 1e-10))
-                        exponent = -(feature_value - mean)**2 / (2 * std**2)
-                        prob_c_given_f += np.log(1 / (np.sqrt(2 * np.pi) * std) * np.exp(exponent))
-                    elif i in self.feature_probs and c in self.feature_probs[i]:
-                        # Diskretes Merkmal
-                        prob_c_given_f += np.log(self.feature_probs[i][c].get(feature_value, 1e-10))
+                    mean, std = self.feature_params[c]['mean'][i], self.feature_params[c]['std'][i]
+                    exponent = -(feature_value - mean)**2 / (2 * std**2)
+                    prob_c_given_f += np.log(1 / (np.sqrt(2 * np.pi) * std) * np.exp(exponent))
 
                 if prob_c_given_f > max_prob or predicted_class is None:
                     max_prob = prob_c_given_f
@@ -63,6 +49,7 @@ class NaiveBayesClassifier:
             predictions.append(predicted_class)
 
         return np.array(predictions)
+
 
     
 # # Annahme: X_train und y_train sind Ihre Trainingsdaten
