@@ -15,21 +15,15 @@ df_layout = {
     "class": [],
 }
 df = pd.DataFrame(df_layout)  # Erstellt Dataframe layout
-
-new_width, new_height = (
-    125,
-    125,
-)  # (gewünschte Auflösung (Breite, Höhe) des bildes für die Merkmalerkennung)
-zoomfactor = int(
-    600 / max(new_width, new_height)
-)  # zahl 600 ist die größte seite des Anzeigefensters
-zoom = (
-    new_width * zoomfactor,
-    new_height * zoomfactor,
-)  # Berechnung des Zoomfaktors (nur für Anzeige)
+# gewünschte Auflösung (Breite, Höhe) des bildes für die Merkmalerkennung
+new_width, new_height = (125, 125)
+# zahl 600 ist die größte seite des Anzeigefensters
+zoomfactor = int(600 / max(new_width, new_height))
+# Berechnung des Zoomfaktors (nur für Anzeige)
+zoom = (new_width * zoomfactor, new_height * zoomfactor)
 
 
-for i in range(3):
+for i in range(3):  # for Schleife auf Bilder aus verschiedenen Ordnern zuzugreifen
     if i == 0:
         input_dir = "photos/Zwiebel"
         output_dir = "photos_reduced/Zwiebel_reduced"
@@ -54,11 +48,6 @@ for i in range(3):
         img = feature_extraction_functions.resize(
             input_dir, output_dir, file, new_width, new_height
         )
-
-        # finale Merkmale:
-        # contour_number = feature_extraction_functions.contour_number(img, count, zoom)
-        # average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, count, zoom)
-        # extent, aspect_ratio = feature_extraction_functions.extent(img, count, zoom)
 
         (
             contour_number,
@@ -86,13 +75,8 @@ for i in range(3):
 
 
 df = pd.DataFrame(df_layout)
-
-# df = df._append(pd.DataFrame(df_layout), ignore_index=True)  # neue Zeilen an df anhängen, Indexierung fortführen
-
-
-df.to_csv(
-    "output.csv", sep=","
-)  # csv speichert weniger Metadaten, braucht weniger Speicher, sehr sinnvoll wenn Daten iwann sehr groß werden. "," als trennzeichen für ordnetliche formatierung der anzeigetabelle
+# csv speichert weniger Metadaten, braucht weniger Speicher, sehr sinnvoll wenn Daten iwann sehr groß werden. "," als trennzeichen für ordentliche formatierung der anzeigetabelle
+df.to_csv("output.csv", sep=",")
 
 cv.waitKey(0)
 cv.destroyAllWindows()
