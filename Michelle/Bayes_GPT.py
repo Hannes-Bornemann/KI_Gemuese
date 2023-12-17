@@ -11,10 +11,10 @@ class NaiveBayesClassifier:
         total_samples = len(y_train)
         for c in self.classes:
             samples_in_class = np.sum(y_train == c)
-            self.class_probs[c] = samples_in_class / total_samples
+            self.class_probs[c] = samples_in_class / total_samples #Wahrscheinlichkeit P(c), das eine bestimmte Klasse auftritt
 
             # Berechne P(F_i|C) für jedes Merkmal und Klasse
-            for i in range(X_train.shape[1]):
+            for i in range(X_train.shape[1]): #iterieren über die Anzahl der Merkmale
                 feature_values = X_train[y_train == c, i]
                 unique_values, counts = np.unique(feature_values, return_counts=True)
                 prob_dict = dict(zip(unique_values, counts / samples_in_class))
