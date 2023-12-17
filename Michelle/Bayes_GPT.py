@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 class NaiveBayesClassifier:
     def __init__(self, classes):
@@ -45,21 +46,25 @@ class NaiveBayesClassifier:
 
         return np.array(predictions)
     
-# Annahme: X_train und y_train sind Ihre Trainingsdaten
-X_train = np.array([[1, 'S'], [2, 'M'], [2, 'M'], [1, 'S'], [1, 'S'], [2, 'S'], [2, 'L'], [2, 'L'], [3, 'L']])
-y_train = np.array(['N', 'N', 'Y', 'Y', 'Y', 'N', 'Y', 'N', 'Y'])
+# # Annahme: X_train und y_train sind Ihre Trainingsdaten
+# X_train = np.array([[1, 'S'], [2, 'M'], [2, 'M'], [1, 'S'], [1, 'S'], [2, 'S'], [2, 'L'], [2, 'L'], [3, 'L']])
+# y_train = np.array(['N', 'N', 'Y', 'Y', 'Y', 'N', 'Y', 'N', 'Y'])
 
-# Annahme: X_test sind Ihre Testdaten
-X_test = np.array([[1, 'M'], [2, 'S'], [3, 'L']])
+# # Annahme: X_test sind Ihre Testdaten
+# X_test = np.array([[1, 'M'], [2, 'S'], [3, 'L']])
 
-# Initialisieren und trainieren Sie den Klassifikator
-classes = np.unique(y_train)
-nb_classifier = NaiveBayesClassifier(classes)
-nb_classifier.train(X_train, y_train)
+# # Initialisieren und trainieren Sie den Klassifikator
+# classes = np.unique(y_train)
+# nb_classifier = NaiveBayesClassifier(classes)
+# nb_classifier.train(X_train, y_train)
 
-# Vorhersagen für die Testdaten machen
-predictions = nb_classifier.predict(X_test)
+# # Vorhersagen für die Testdaten machen
+# predictions = nb_classifier.predict(X_test)
 
-# Ausgabe der Vorhersagen
-print("Predictions:", predictions)
+# # Ausgabe der Vorhersagen
+# print("Predictions:", predictions)
 
+# Get the data
+col_names = ['contour number', 'aspect ratio', 'extent', 'Blue', 'Green', 'Red', 'Hue']
+data = pd.read_csv("output.csv", skiprows=1, header=None, names=col_names)
+print(data.head(10))
