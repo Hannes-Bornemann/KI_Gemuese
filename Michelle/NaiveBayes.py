@@ -15,7 +15,7 @@ class NaivesBayes:
         self.P = self.P/X.shape[0] #Normierung durch die Teilung der Anzahl der einzelnen Werte durch die Länge von Y -> Wahrscheinlichkeitsverteilung
 
         if self.continous is None:
-            self.continous = np.zeros(x.shape[1], dtype=bool)
+            self.continous = np.zeros(X.shape[1], dtype=bool)
         Xd = X[:, ~self.continous]
         Xc = X[:, self.continous]
 
@@ -82,18 +82,27 @@ Y = data.iloc[:, -1].values.reshape(-1, 1)  # nur letzte Spalte. "reshape" konve
 # Aufteilen der Daten in Trainings-und Testdaten
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=41)
 
-#Initialisieren und Trainieren des Klassifikators
-classes = np.unique(Y_train)
-nb_classifier = NaiveBayesClassifier(classes)
-nb_classifier.train(X_train, Y_train)
+# #Initialisieren und Trainieren des Klassifikators
+# classes = np.unique(Y_train)
+# nb_classifier = NaivesBayes(classes)
+# nb_classifier.train(X_train, Y_train)
 
-#Vorhersagen für die Testdaten
-predictions = nb_classifier.predict(X_test)
+# #Vorhersagen für die Testdaten
+# predictions = nb_classifier.predict(X_test)
 
-#Ausgabe der Vorhersagen
-print("Predictions:", predictions)
+# #Ausgabe der Vorhersagen
+# print("Predictions:", predictions)
 
-#hi
+nb_classifier = NaivesBayes(continous=False)
+nb_classifier.fit(X_train, Y_train)
+
+yP = nb_classifier.predict(X_test)
+print(nb_classifier.predictProba(X_test))
+incorrect = np.sum(yP != Y_test)
+correct = yP.shape[0] -incorrect
+
+
+
 
 
 
