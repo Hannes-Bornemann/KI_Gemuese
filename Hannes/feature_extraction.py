@@ -22,26 +22,26 @@ zoomfactor = int(600 / max(new_width, new_height))
 # Berechnung des Zoomfaktors (nur für Anzeige)
 zoom = (new_width * zoomfactor, new_height * zoomfactor)
 
-
+max_files_global =1500
 for i in range(3):  # for Schleife auf Bilder aus verschiedenen Ordnern zuzugreifen
     if i == 0:
-        input_dir = "photos/Zwiebel"
+        input_dir = "photos_Kommilitonen/Zwiebel"
         output_dir = "photos_reduced/Zwiebel_reduced"
         files = os.listdir(input_dir)  # speichert dateinamen in liste
         count = 1  # setzten
-        max_files = 50  # Anzahl bilder die gelesen werden sollen
+        max_files = max_files_global  # Anzahl bilder die gelesen werden sollen
     elif i == 1:
-        input_dir = "photos/Karotte"
+        input_dir = "photos_Kommilitonen/Karotte"
         output_dir = "photos_reduced/Karotte_reduced"
         files = os.listdir(input_dir)
-        count = 51  # zurücksetzten (nur Reihe fortsetzen wenn bilder angezeigt werden sollen, weil bilder sich sonst überschreiben. Sonst kann wieder bei 1 begoonen werden und immer gleiches "max_files" genutzt werden)
-        max_files = 100  # Anzahl bilder die gelesen werden sollen
+        count = max_files_global+1  # zurücksetzten (nur Reihe fortsetzen wenn bilder angezeigt werden sollen, weil bilder sich sonst überschreiben. Sonst kann wieder bei 1 begoonen werden und immer gleiches "max_files" genutzt werden)
+        max_files = max_files_global*2  # Anzahl bilder die gelesen werden sollen
     elif i == 2:
-        input_dir = "photos/Kartoffel"
+        input_dir = "photos_Kommilitonen/Kartoffel"
         output_dir = "photos_reduced/Kartoffel_reduced"
         files = os.listdir(input_dir)
-        count = 101
-        max_files = 150
+        count = 2*max_files_global+1
+        max_files = max_files_global*3
 
     for file in files:
         # Bild aus Ordner einlesen, verkleinern in Zielordner schreiben und zurück geben
