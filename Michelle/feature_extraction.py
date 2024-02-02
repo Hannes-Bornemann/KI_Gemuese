@@ -4,53 +4,80 @@ import numpy as np
 import os
 import feature_extraction_functions
 
-excel_layout = {
-    'contour number': [],
-    'aspect ratio': [],
-    'extent': [],
-    'Blue': [],
-    'Green': [],
-    'Red': [],
-    'Hue': [],
-    }
-input_dir = 'photos/Karotte'
-output_dir = 'photos_reduced/Karotte_reduced'
-files = os.listdir(input_dir)   # speichert dateinamen in liste
+df_layout = {
+    "contour number": [],
+    "aspect ratio": [],
+    "extent": [],
+    "Blue": [],
+    "Green": [],
+    "Red": [],
+    "Hue": [],
+    "class": [],
+}
+df = pd.DataFrame(df_layout)  # Erstellt Dataframe layout
+# gewünschte Auflösung (Breite, Höhe) des bildes für die Merkmalerkennung
+new_width, new_height = (125, 125)
+# zahl 600 ist die größte seite des Anzeigefensters
+zoomfactor = int(600 / max(new_width, new_height))
+# Berechnung des Zoomfaktors (nur für Anzeige)
+zoom = (new_width * zoomfactor, new_height * zoomfactor)
 
-new_width, new_height = (125, 125) # (gewünschte Auflösung (Breite, Höhe) des bildes für die Merkmalerkennung)
-zoomfactor = int(600 / max(new_width, new_height)) # zahl 600 ist die größte seite des Anzeigefensters
-zoom = (new_width*zoomfactor, new_height*zoomfactor) # Berechnung des Zoomfaktors (nur für Anzeige)
+max_files_global =1500
+for i in range(3):  # for Schleife auf Bilder aus verschiedenen Ordnern zuzugreifen
+    if i == 0:
+        input_dir = "KI_Bilder_Burkhardt/Zwiebel"
+        output_dir = "KI_Bilder_Burkhardt_reduced/Zwiebel_reduced"
+        files = os.listdir(input_dir)  # speichert dateinamen in liste
+        count = 1  # setzten
+        max_files = max_files_global  # Anzahl bilder die gelesen werden sollen
+    elif i == 1:
+        input_dir = "KI_Bilder_Burkhardt/Karotte"
+        output_dir = "KI_Bilder_Burkhardt_reduced/Karotte_reduced"
+        files = os.listdir(input_dir)
+        count = max_files_global+1  # zurücksetzten (nur Reihe fortsetzen wenn bilder angezeigt werden sollen, weil bilder sich sonst überschreiben. Sonst kann wieder bei 1 begoonen werden und immer gleiches "max_files" genutzt werden)
+        max_files = max_files_global*2  # Anzahl bilder die gelesen werden sollen
+    elif i == 2:
+        input_dir = "KI_Bilder_Burkhardt/Kartoffel"
+        output_dir = "KI_Bilder_Burkhardt_reduced/Kartoffel_reduced"
+        files = os.listdir(input_dir)
+        count = 2*max_files_global+1
+        max_files = max_files_global*3
 
-max_files = 20  # Anzahl bilder die gelesen werden sollen
-count = 1
+    for file in files:
+        # Bild aus Ordner einlesen, verkleinern in Zielordner schreiben und zurück geben
+        img = feature_extraction_functions.resize(
+            input_dir, output_dir, file, new_width, new_height
+        )
 
-for file in files:
-    # Bild aus Ordner einlesen, verkleinern in Zielordner schreiben und zurück geben
-    img = feature_extraction_functions.resize(input_dir, output_dir, file, new_width, new_height)
+        (
+            contour_number,
+            aspect_ratio,
+            extent,
+            average_blue,
+            average_green,
+            average_red,
+            average_hue,
+        ) = feature_extraction_functions.get_Features(img, count, zoom)
 
-    # finale Merkmale:
-    # contour_number = feature_extraction_functions.contour_number(img, count, zoom)
-    # average_blue, average_green, average_red, average_hue = feature_extraction_functions.mean_colours(img, count, zoom)
-    # extent, aspect_ratio = feature_extraction_functions.extent(img, count, zoom)
+        # werte an value im dictionary hängen
+        df_layout["contour number"].append(contour_number)
+        df_layout["aspect ratio"].append(aspect_ratio)
+        df_layout["extent"].append(extent)
+        df_layout["Blue"].append(average_blue)
+        df_layout["Green"].append(average_green)
+        df_layout["Red"].append(average_red)
+        df_layout["Hue"].append(average_hue)
+        df_layout["class"].append(i)
 
-    contour_number, aspect_ratio, extent, average_blue, average_green, average_red , average_hue = feature_extraction_functions.get_Features(img, count, zoom)
+        if count >= max_files:
+            break
+        count += 1
 
-    # werte an value im dictionary hängen
-    excel_layout['contour number'].append(contour_number)
-    excel_layout['aspect ratio'].append(aspect_ratio)
-    excel_layout['extent'].append(extent)
-    excel_layout['Blue'].append(average_blue)
-    excel_layout['Green'].append(average_green)
-    excel_layout['Red'].append(average_red)
-    excel_layout['Hue'].append(average_hue)
-    
-    if count >= max_files:
-        break
-    count += 1
-    
 
-df = pd.DataFrame(excel_layout) 
-df.to_excel('output.xlsx', index=False, startrow=0, startcol=0)
+df = pd.DataFrame(df_layout)
+# csv speichert weniger Metadaten, braucht weniger Speicher, sehr sinnvoll wenn Daten iwann sehr groß werden. "," als trennzeichen für ordentliche Formatierung der Anzeigetabelle
+df.to_csv("output_Burkhardt.csv", sep=",")
+df.to_excel("output_Burkhardt.xlsx", index=False)
 
 cv.waitKey(0)
-cv.destroyAllWindows() 
+cv.destroyAllWindows()
