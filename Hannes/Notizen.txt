@@ -89,3 +89,5 @@ Fragen/TODO
 
 
 csv vorher: 3309 zeilen, am ende nummer 2
+
+nicht k means bei anomalie (das macht michelle)
