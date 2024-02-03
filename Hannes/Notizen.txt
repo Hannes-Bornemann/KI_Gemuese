@@ -83,3 +83,6 @@ PRÄSENTATION:
 -CNN Schichten verstehen und erklären können!!
 -
 
+Fragen/TODO
+-sollen wir testbilder auch durch CNN/TL laufen lassen? wenn ja wie hat Michelle das gemacht? (✓) -> klassenzuordnung meist falsch
+-in feature_extraction bilder mit matplotlib ausgeben, sodass sie im notebook zu sehen sind
