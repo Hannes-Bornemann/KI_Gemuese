@@ -39,7 +39,6 @@ def resize(input_dir, output_dir, file, new_width, new_height):
     # Verkleinertes Bild zurück geben
     return img
 
-
 def contour_number(image, count, zoom):
     # Kopiere das Originalbild, um es nicht zu verändern
     image_copy = image.copy()
@@ -57,7 +56,6 @@ def contour_number(image, count, zoom):
     cv.imshow(f'img{count}', image)
 
     return contour_number
-
 
 def mean_colours(image, count, zoom):
     image_copy = image.copy()
