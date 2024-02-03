@@ -22,7 +22,7 @@ zoomfactor = int(600 / max(new_width, new_height))
 # Berechnung des Zoomfaktors (nur für Anzeige)
 zoom = (new_width * zoomfactor, new_height * zoomfactor)
 
-max_files_global =1500
+max_files_global =2
 for i in range(3):  # for Schleife auf Bilder aus verschiedenen Ordnern zuzugreifen
     if i == 0:
         input_dir = "photos_Kommilitonen/Zwiebel"
@@ -72,7 +72,6 @@ for i in range(3):  # for Schleife auf Bilder aus verschiedenen Ordnern zuzugrei
         if count >= max_files:
             break
         count += 1
-
 
 df = pd.DataFrame(df_layout)
 # csv speichert weniger Metadaten, braucht weniger Speicher, sehr sinnvoll wenn Daten iwann sehr groß werden. "," als trennzeichen für ordentliche Formatierung der Anzeigetabelle

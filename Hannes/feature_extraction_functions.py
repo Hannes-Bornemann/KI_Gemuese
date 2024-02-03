@@ -2,7 +2,6 @@ import cv2 as cv
 import numpy as np
 import os
 
-
 def resize(input_dir, output_dir, file, new_width, new_height):
     # Bilder Verkleinern und in Ordner speichern
     input_path = os.path.join(input_dir, file)
@@ -53,9 +52,9 @@ def contour_number(image, count, zoom):
         image_copy, contours, -1, (0, 255, 0), 1
     )  # Grüne Farbe, Linienbreite 2
 
-    # # Bild vergrößert anzeigen lassen
-    # image = cv.resize(image, zoom)
-    # cv.imshow(f'img{count}', image)
+    # Bild vergrößert anzeigen lassen
+    image = cv.resize(image, zoom)
+    cv.imshow(f'img{count}', image)
 
     return contour_number
 
