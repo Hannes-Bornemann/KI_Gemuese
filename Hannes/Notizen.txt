@@ -85,9 +85,10 @@ PRÄSENTATION:
 
 Fragen/TODO
 -sollen wir testbilder auch durch CNN/TL laufen lassen? wenn ja wie hat Michelle das gemacht? (✓) -> klassenzuordnung meist falsch
+-vergleich der wichtigsten Kennzahlen bei selbst programmierten Verfahren ✓
+
 -in feature_extraction bilder mit matplotlib ausgeben, sodass sie im notebook zu sehen sind
-
-
-csv vorher: 3309 zeilen, am ende nummer 2
+-Ein vorgefertigtes Verfahren, das bisher nicht verglichen wurde
 
 nicht k means und dbscan bei anomalie (das macht michelle)
+
