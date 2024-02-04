@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
+from PIL import Image
 
 def resize(input_dir, output_dir, file, new_width, new_height):
     # Bilder Verkleinern und in Ordner speichern
@@ -8,8 +9,6 @@ def resize(input_dir, output_dir, file, new_width, new_height):
     output_path = os.path.join(output_dir, file)
     img = cv.imread(input_path)  # Bild ist 3:4
     height, width = img.shape[:2]
-
-    # print ("höhe: ", height, "breite: ", width, "höhe/breite: ", width/height)
 
     # Wenn bild in Breite erweitert werden muss:
     if width / height < new_width / new_height:
@@ -36,8 +35,12 @@ def resize(input_dir, output_dir, file, new_width, new_height):
 
     # Verkleinertes Bild in Ordner speichern
     cv.imwrite(output_path, img)
+
+    # Convert image array to PIL Image object
+    pil_image = Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))
+
     # Verkleinertes Bild zurück geben
-    return img
+    return np.array(pil_image)
 
 def contour_number(image, count, zoom):
     # Kopiere das Originalbild, um es nicht zu verändern
@@ -62,19 +65,16 @@ def mean_colours(image, count, zoom):
     img1 = cv.Canny(image_copy, 100, 50)  # edges
     # finde Konturen, speichere sie in Liste und gebe Anzahl aus
     contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
-    # print("Anzahl der Konturen: ", len(contours))
     # finde die größte Kontur
     largest_contour = max(contours, key=cv.contourArea)
     # finde konvexe Hülle
     hull = cv.convexHull(largest_contour)
     # Zeichne konvexe Hülle auf das Bild
-    cv.drawContours(
-        image_copy, [hull], 0, (0, 255, 0), 1
-    )  # Grüne Farbe, Linienbreite 2
+    cv.drawContours(image_copy, [hull], 0, (0, 255, 0), 1)  # Grüne Farbe, Linienbreite 2
 
-    # create an empty mask
+    # Kreiere leere Maske
     mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
-    # fill the contour into the mask
+    # Zeichne konvexe Hülle in Maske
     cv.fillPoly(mask, [hull], (255))
 
     # Pixel in der Maske auswählen
@@ -100,9 +100,7 @@ def mean_colours(image, count, zoom):
 def extent(image, count, zoom):
     image_copy = image.copy()
     img1 = cv.Canny(image_copy, 100, 50)  # edges
-    contours, hierarchy = cv.findContours(
-        img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE
-    )
+    contours, hierarchy = cv.findContours(img1, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     largest_contour = max(contours, key=cv.contourArea)
     hull = cv.convexHull(largest_contour)
 
@@ -110,12 +108,7 @@ def extent(image, count, zoom):
 
     # RotatedRect zeichnen
     box_points = cv.boxPoints(rotated_rect).astype(int)
-
     cv.drawContours(image_copy, [box_points], 0, (0, 255, 0), 1)
-
-    # Bild vergrößert anzeigen lassen
-    # image_copy = cv.resize(image_copy, zoom)
-    # cv.imshow(f'img{count}', image_copy)
 
     w = np.linalg.norm(box_points[0] - box_points[1])
     h = np.linalg.norm(box_points[1] - box_points[2])
@@ -144,26 +137,27 @@ def extent(image, count, zoom):
 def get_Features(image, count, zoom):
     # Kopiere das Originalbild, um es nicht zu verändern
     image_copy = image.copy()
+    image_copy_contours = image.copy()
+    image_copy_hull = image.copy()
+    image_copy_bounding = image.copy()
+    image_copy_mask = image.copy()
 
     # contour_number
     img1 = cv.Canny(image_copy, 100, 50)  # erzeugt einkanaliges Bild mit Kanten drauf
-    contours, hierarchy = cv.findContours(
-        img1, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE
-    )  # zählt Kanten, speichert sie in Liste
+    contours, hierarchy = cv.findContours(img1, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)  # zählt Kanten, speichert sie in Liste
     contour_number = int(len(contours))  # Zählen der Listeneinträge
-    # cv.drawContours(image_copy, contours, -1, (0, 255, 0), 1)  # Alle Konturen auf bild zeichnen
+    cv.drawContours(image_copy_contours, contours, -1, (0, 255, 0), 1)  # Alle Konturen auf bild zeichnen
+    pil_image_contours = Image.fromarray(image_copy_contours) # Array in PIL bild umwandeln	
 
     # aspect ratio, extent
     largest_contour = max(contours, key=cv.contourArea)
     hull = cv.convexHull(largest_contour)
-    cv.drawContours(
-        image_copy, [hull], 0, (0, 255, 0), 1
-    )  # konvexe Hülle auf Bild zeichnen
+    cv.drawContours( image_copy_hull, [hull], 0, (0, 255, 0), 1)  # konvexe Hülle auf Bild zeichnen
+    pil_image_hull = Image.fromarray(image_copy_hull)  # Array in PIL bild umwandeln	
     rotated_rect = cv.minAreaRect(hull)
     box_points = cv.boxPoints(rotated_rect).astype(int)
-    cv.drawContours(
-        image_copy, [box_points], 0, (0, 255, 0), 1
-    )  # Bounding Box auf Bild zeichnen
+    cv.drawContours(image_copy_bounding, [box_points], 0, (0, 255, 0), 1)  # Bounding Box auf Bild zeichnen
+    pil_image_bounding = Image.fromarray(image_copy_bounding)  # Array in PIL bild umwandeln
     w = np.linalg.norm(box_points[0] - box_points[1])
     h = np.linalg.norm(box_points[1] - box_points[2])
     longer_side = max(w, h)
@@ -174,27 +168,19 @@ def get_Features(image, count, zoom):
     aspect_ratio = shorter_side / longer_side
 
     # mean colours
-    mask = np.zeros(
-        (image.shape[0], image.shape[1]), dtype=np.uint8
-    )  # leere Maske erzeugen
+    mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)  # leere Maske erzeugen
     cv.fillPoly(mask, [hull], (255))  # ausgefüllte hülle in maske schreiben
-    pixel_in_mask = image_copy[
-        mask == 255
-    ]  # Maske über Bild legen und relevante Pixel auswählen
-    average_blue = np.mean(
-        pixel_in_mask[:, 0]
-    )  #  Farbmittelwerte für Kanäle BGR in der Maske berechnen
+    pixel_in_mask = image_copy[mask == 255]  # Maske über Bild legen und relevante Pixel auswählen
+    average_blue = np.mean(pixel_in_mask[:, 0])  #  Farbmittelwerte für Kanäle BGR in der Maske berechnen
     average_green = np.mean(pixel_in_mask[:, 1])
     average_red = np.mean(pixel_in_mask[:, 2])
-    hsv = cv.cvtColor(
-        image, cv.COLOR_BGR2HSV
-    )  # Farbmittelwert für Hue Kanal in der Maske berechnen
+    hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)  # Farbmittelwert für Hue Kanal in der Maske berechnen
     pixel_in_mask_hsv = hsv[mask == 255]
     average_hue = np.mean(pixel_in_mask_hsv[:, 0])
-
-    # Bild vergrößert anzeigen lassen
-    # image_copy = cv.resize(image_copy, zoom)
-    # cv.imshow(f'img{count}', image_copy)
+    
+    image_copy_mask[mask != 255] = (255, 255, 255) # Färbe alles außerhalb der Maske weiß
+    cv.drawContours(image_copy_mask, [hull], 0, (0, 255, 0), 1)  # Maske auf Bild zeichnen
+    pil_image_mask = Image.fromarray(image_copy_mask)  # Array in PIL bild umwandeln
 
     return (
         contour_number,
@@ -204,4 +190,8 @@ def get_Features(image, count, zoom):
         average_green,
         average_red,
         average_hue,
+        np.array(pil_image_contours),  # Return the image as a numpy array
+        np.array(pil_image_hull),
+        np.array(pil_image_bounding),
+        np.array(pil_image_mask)
     )
